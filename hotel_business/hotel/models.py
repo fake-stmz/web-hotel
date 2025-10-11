@@ -3,55 +3,57 @@ from django.db.models import CASCADE
 
 
 # Create your models here.
-class Document(models.Model):
-    series = models.IntegerField()
-    number = models.IntegerField()
-    date_of_issue = models.DateField()
-    issued_by = models.CharField(max_length=200)
+class Document(models.Model): # Документ
+    series = models.IntegerField() # Серия
+    number = models.IntegerField() # Номер
+    date_of_issue = models.DateField() # Дата выдачи
+    issued_by = models.CharField(max_length=200) # Кем выдан
 
-class Category(models.Model):
-    name = models.CharField(max_length=50)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    description = models.TextField()
+class Category(models.Model): # Категория
+    name = models.CharField(max_length=50) # Название
+    price = models.DecimalField(max_digits=10, decimal_places=2) # Цена
+    description = models.TextField() # Описание
 
-class Item(models.Model):
-    name = models.CharField(max_length=50)
+class Item(models.Model): # Предмет
+    name = models.CharField(max_length=50) # Название
 
-class Service(models.Model):
-    name = models.CharField(max_length=50)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    description = models.TextField()
+class Service(models.Model): # Услуга
+    name = models.CharField(max_length=50) # Название
+    price = models.DecimalField(max_digits=10, decimal_places=2) # Цена
+    description = models.TextField() # Описание
 
-class Guest(models.Model):
-    name = models.CharField(max_length=200)
-    phone_number = models.CharField(max_length=16)
-    date_of_birth = models.DateField()
-    document = models.ForeignKey(Document, on_delete=CASCADE, related_name="guest", null=True, blank=True)
-    discount = models.IntegerField()
+class Guest(models.Model): # Гость
+    name = models.CharField(max_length=200) # ФИО
+    phone_number = models.CharField(max_length=16) # Номер телефона в формате +7(777)777-77-77
+    date_of_birth = models.DateField() # Дата рождения
+    document = models.ForeignKey(Document, on_delete=CASCADE, related_name="guest", null=True, blank=True) # Документ (может быть пустой)
+    discount = models.IntegerField() # Скидка в процентах
 
-class Room(models.Model):
-    floor = models.IntegerField()
-    room_count = models.IntegerField()
-    berths_count = models.IntegerField()
-    category = models.ForeignKey(Category, on_delete=CASCADE, related_name="rooms")
+class Room(models.Model): # Номер
+    floor = models.IntegerField() # Этаж
+    room_count = models.IntegerField() # Количество комнат
+    berths_count = models.IntegerField() # Количество спальных мест
+    category = models.ForeignKey(Category, on_delete=CASCADE, related_name="rooms") # Категория
 
-class Equipment(models.Model):
-    category = models.ForeignKey(Category, on_delete=CASCADE, related_name="equipment")
-    item = models.ForeignKey(Item, on_delete=CASCADE, related_name="equipment")
+class Equipment(models.Model): # Оснащение
+    category = models.ForeignKey(Category, on_delete=CASCADE, related_name="equipment") # Категория
+    item = models.ForeignKey(Item, on_delete=CASCADE, related_name="equipment") # Предмет
 
+    # Объявление о том, что связка категории и предмета уникальна
+    # Но в базе данных все равно сгенерируется отдельное поле первичного ключа
     class Meta:
-        unique_together = (('category_id', 'item_id'),)
+        unique_together = (('category', 'item'),)
 
-class Reservation(models.Model):
-    client = models.ForeignKey(Guest, on_delete=CASCADE, related_name="reservations")
-    room = models.ForeignKey(Room, on_delete=CASCADE, related_name="reservations")
-    move_in_date = models.DateField()
-    move_out_date = models.DateField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    paid = models.BooleanField(default=False)
+class Reservation(models.Model): # Бронирование
+    client = models.ForeignKey(Guest, on_delete=CASCADE, related_name="reservations") # Клиент
+    room = models.ForeignKey(Room, on_delete=CASCADE, related_name="reservations") # Номер
+    move_in_date = models.DateField() # Дата заезда
+    move_out_date = models.DateField() # Дата выезда
+    price = models.DecimalField(max_digits=10, decimal_places=2) # Стоимость
+    paid = models.BooleanField(default=False) # Факт оплаты
 
-class ProvisionOfService(models.Model):
-    reservation = models.ForeignKey(Reservation, on_delete=CASCADE, related_name="provisions")
-    service = models.ForeignKey(Service, on_delete=CASCADE, related_name="provisions")
-    count = models.IntegerField()
-    date_of_provision = models.DateField()
+class ProvisionOfService(models.Model): # Оказание услуги
+    reservation = models.ForeignKey(Reservation, on_delete=CASCADE, related_name="provisions") # Бронирование
+    service = models.ForeignKey(Service, on_delete=CASCADE, related_name="provisions") # Услуга
+    count = models.IntegerField() # Количество
+    date_of_provision = models.DateField() # Дата оказания
