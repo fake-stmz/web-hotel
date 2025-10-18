@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from .models import Service
 
 # Create your views here.
 def index(request):
@@ -8,7 +9,10 @@ def index(request):
         print("User not authenticated, redirecting to login page")
         return redirect('login')
 
-    return render(request, 'index.html')
+    services = Service.objects.all()
+    context = { 'services': services }
+
+    return render(request, 'index.html', context)
 
 
 def login_page(request):

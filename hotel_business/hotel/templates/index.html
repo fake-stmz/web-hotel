@@ -17,6 +17,18 @@
         </nav>
     </header>
     <main>
+        <div class="uk-container uk-margin-top">
+            <h1 class="uk-text-center">Список услуг</h1>
+            <div class="uk-container uk-margin-top">
+                {% for service in services %}
+                <div class="uk-card uk-card-default uk-card-body uk-margin-bottom">
+                    <h3 class="uk-card-title">{{ service.name }}</h3>
+                    <p>{{ service.description }}</p>
+                    <p><b>Цена:</b> {{ service.price }} руб.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
         
     </main>
 </body>
