@@ -49,6 +49,13 @@ def register_page(request):
 
     return render(request, 'register.html')
 
+def guest_login(request):
+    
+    guest_user = authenticate(request, username='guest', password='guestpassword')
+    login(request, guest_user)
+    return redirect('index')
+    
 def logout_page(request):
+    
     logout(request)
     return redirect('login')

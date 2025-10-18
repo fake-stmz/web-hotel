@@ -3,6 +3,15 @@
 from django.db import migrations, models
 import django.db.models.deletion
 
+# Create guest user
+
+
+def create_guest_user(apps, schema_editor):
+    User = apps.get_model('auth', 'User')
+    user = User.objects.create_user(username='guest', password='guestpassword')
+    Group = apps.get_model('auth', 'Group')
+    guest_group = Group.objects.get_or_create(name='Guests')
+    user.groups.add(guest_group[0])
 
 class Migration(migrations.Migration):
 
@@ -12,6 +21,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(create_guest_user),
         migrations.CreateModel(
             name='Category',
             fields=[
