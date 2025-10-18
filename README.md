@@ -3,9 +3,11 @@
 Веб-приложение для отеля.
 
 Демонстрация работы приложения:
-https://github.com/user-attachments/assets/f050c6a4-4379-4ab6-ac92-194134d2944e
+
+https://github.com/user-attachments/assets/8ea83a62-3b91-45ee-a3ef-5fe371636279
 
 Схема БД:
+
 <img alt="Схема БД" src="https://github.com/user-attachments/assets/7b67ceb5-b104-47ae-a0e1-99b600696fd7" />
 
 ## Начало работы
