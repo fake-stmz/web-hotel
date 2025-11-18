@@ -5,14 +5,37 @@ from .models import Service
 
 # Create your views here.
 def index(request):
-    if not request.user.is_authenticated:
-        print("User not authenticated, redirecting to login page")
+    current_user = request.user
+
+    if not current_user.is_authenticated:
         return redirect('login')
 
-    services = Service.objects.all()
-    context = { 'services': services }
+    if current_user.groups.filter(name="Manager").exists():
+        return service_list_manager(request)
 
-    return render(request, 'index.html', context)
+    return service_list_guest(request)
+
+
+def service_list_guest(request):
+    services = Service.objects.all()
+    context = {'services': services}
+
+    return render(request, 'index_guest.html', context)
+
+
+def service_list_manager(request):
+    services = Service.objects.all()
+
+    search_query = request.GET.get('search')
+    if search_query:
+        services = services.filter(name__icontains=search_query)
+
+    context = {
+        'services': services,
+        'search': search_query
+    }
+
+    return render(request, 'index_manager.html', context)
 
 
 def login_page(request):

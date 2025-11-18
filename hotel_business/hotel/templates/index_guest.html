@@ -4,15 +4,22 @@
     <meta charset="UTF-8">
     <title>Web Hotel - Главная</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/css/uikit.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/js/uikit-icons.min.js"></script>
 </head>
 <body>
     <header>
         <nav class="uk-navbar-container uk-navbar" uk-navbar>
             <div class="uk-navbar-left uk-margin-left">
-                <a class="uk-navbar-item uk-logo" href="/">Web Hotel</a>
+                <div class="uk-navbar-item">
+                    <a class="uk-navbar-item uk-logo" href="/">Web Hotel</a>
+                </div>
             </div>
+            {% block search %}{% endblock %}
             <div class="uk-navbar-right uk-margin-right">
-                <a class="uk-navbar-item uk-link-text" href="/logout/">Выйти</a>
+                <div class="uk-navbar-item">
+                    <a class="uk-navbar-item uk-link-text" href="/logout/">Выйти</a>
+                </div>
             </div>
         </nav>
     </header>
@@ -29,7 +36,6 @@
                 {% endfor %}
             </div>
         </div>
-        
     </main>
 </body>
 </html>

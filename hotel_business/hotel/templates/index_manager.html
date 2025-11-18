@@ -1,0 +1,13 @@
+{% extends "index_guest.html" %}
+
+{% block search %}
+<div class="uk-navbar-center">
+    <div class="uk-navbar-item">
+        <form class="uk-search uk-search-default uk-flex uk-width-1-1">
+            <span uk-search-icon></span>
+            <input class="uk-search-input" type="search" placeholder="Поиск" name="search" {% if search %}value={{ search }}{% endif %}>
+            <button class="uk-button uk-button-primary uk-margin-left" type="submit">Поиск</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
