@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
-from .models import Service
+from .models import Service, Room, Category
 
 
 def index(request):
@@ -26,6 +26,7 @@ def service_list_guest(request):
 
 
 def service_list_manager(request):
+
     services = Service.objects.all()
 
     search_query = request.GET.get('search')
@@ -46,9 +47,36 @@ def clients(request):
         return redirect('index')
 
     clients_group = Group.objects.get_or_create(name="Clients")
-    clients = clients_group[0].user_set.all()
+    clients_list = clients_group[0].user_set.all()
 
-    return render(request, "clients.html", { 'clients' : clients })
+    return render(request, "clients.html", { 'clients' : clients_list })
+
+
+def rooms(request):
+
+    if not request.user.groups.filter(name="Manager").exists():
+        return redirect('index')
+
+    rooms_list = Room.objects.all().select_related('category').order_by('id')
+    categories = Category.objects.all()
+
+    berths_count_filter = request.GET.get('berths-filter', '')
+    category_filter = request.GET.get('category-filter', '')
+
+    if berths_count_filter:
+        rooms_list = rooms_list.filter(berths_count = int(berths_count_filter))
+
+    if category_filter:
+        rooms_list = rooms_list.filter(category__name = category_filter)
+
+    context = {
+        'rooms': rooms_list,
+        'categories': categories,
+        'berths_filter': berths_count_filter,
+        'category_filter': category_filter
+    }
+
+    return render(request, 'rooms.html', context)
 
 
 def login_page(request):
