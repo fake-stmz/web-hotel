@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
 from .models import Service
 
-# Create your views here.
+
 def index(request):
+
     current_user = request.user
 
     if not current_user.is_authenticated:
@@ -17,6 +18,7 @@ def index(request):
 
 
 def service_list_guest(request):
+
     services = Service.objects.all()
     context = {'services': services}
 
@@ -38,6 +40,17 @@ def service_list_manager(request):
     return render(request, 'index_manager.html', context)
 
 
+def clients(request):
+
+    if not request.user.groups.filter(name="Manager").exists():
+        return redirect('index')
+
+    clients_group = Group.objects.get_or_create(name="Clients")
+    clients = clients_group[0].user_set.all()
+
+    return render(request, "clients.html", { 'clients' : clients })
+
+
 def login_page(request):
     
     if request.method == 'POST':
@@ -53,6 +66,7 @@ def login_page(request):
     
     return render(request, 'login.html')
 
+
 def register_page(request):
 
     if request.method == 'POST':
@@ -65,6 +79,8 @@ def register_page(request):
 
         if password == password_confirm:
             user = User.objects.create_user(username=login_input, first_name=first_name, last_name=last_name, email=email, password=password)
+            clients_group = Group.objects.get_or_create(name="Clients")
+            user.groups.add(clients_group[0])
             login(request, user)
             return redirect('index')
         else:
@@ -72,12 +88,14 @@ def register_page(request):
 
     return render(request, 'register.html')
 
+
 def guest_login(request):
     
     guest_user = authenticate(request, username='guest', password='guestpassword')
     login(request, guest_user)
     return redirect('index')
-    
+
+
 def logout_page(request):
     
     logout(request)

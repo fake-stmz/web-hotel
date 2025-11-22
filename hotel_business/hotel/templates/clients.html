@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Web Hotel - Главная</title>
+    <title>Web Hotel - Клиенты</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/css/uikit.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/js/uikit.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/js/uikit-icons.min.js"></script>
@@ -14,9 +14,10 @@
                 <div class="uk-navbar-item">
                     <a class="uk-navbar-item uk-logo" href="/">Web Hotel</a>
                 </div>
-                {% block links %}{% endblock %}
+                <div class="uk-navbar-item">
+                    <a class="uk-link-text">Список клиентов</a>
+                </div>
             </div>
-            {% block search %}{% endblock %}
             <div class="uk-navbar-right uk-margin-right">
                 <div class="uk-navbar-item">
                     <a class="uk-navbar-item uk-link-text" href="/logout/">Выйти</a>
@@ -24,15 +25,16 @@
             </div>
         </nav>
     </header>
+
     <main>
         <div class="uk-container uk-margin-top">
-            <h1 class="uk-text-center">Список услуг</h1>
+            <h1 class="uk-text-center">Список клиентов</h1>
             <div class="uk-container uk-margin-top">
-                {% for service in services %}
+                {% for client in clients %}
                 <div class="uk-card uk-card-default uk-card-body uk-margin-bottom">
-                    <h3 class="uk-card-title">{{ service.name }}</h3>
-                    <p>{{ service.description }}</p>
-                    <p><b>Цена:</b> {{ service.price }} руб.</p>
+                    <h3 class="uk-card-title">{{ client.first_name }} {{ client.last_name }}</h3>
+                    <p>Логин: {{ client.username }}</p>
+                    <p>Email: {{ client.email }}</p>
                 </div>
                 {% endfor %}
             </div>

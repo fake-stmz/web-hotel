@@ -1,5 +1,11 @@
 {% extends "index_guest.html" %}
 
+{% block links %}
+<div class="uk-navbar-item">
+    <a class="uk-link-text" href="{% url 'clients' %}">Список клиентов</a>
+</div>
+{% endblock %}
+
 {% block search %}
 <div class="uk-navbar-center">
     <div class="uk-navbar-item">
