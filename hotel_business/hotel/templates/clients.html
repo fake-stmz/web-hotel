@@ -20,6 +20,9 @@
                 <div class="uk-navbar-item">
                     <a class="uk-link-text" href="{% url 'rooms' %}">Номерной фонд</a>
                 </div>
+                <div class="uk-navbar-item">
+                    <a class="uk-link-text" href="{% url 'service_provision' %}">Записи на услуги</a>
+                </div>
             </div>
             <div class="uk-navbar-right uk-margin-right">
                 <div class="uk-navbar-item">
@@ -35,9 +38,10 @@
             <div class="uk-container uk-margin-top">
                 {% for client in clients %}
                 <div class="uk-card uk-card-default uk-card-body uk-margin-bottom">
-                    <h3 class="uk-card-title">{{ client.first_name }} {{ client.last_name }}</h3>
-                    <p>Логин: {{ client.username }}</p>
-                    <p>Email: {{ client.email }}</p>
+                    <h3 class="uk-card-title">{{ client.name }}</h3>
+                    <p>Номер телефона: {{ client.phone_number }}</p>
+                    <p>Дата рождения: {{ client.date_of_birth|date:"d.m.Y" }}</p>
+                    <p>Скидка: {{ client.discount }}%</p>
                 </div>
                 {% endfor %}
             </div>

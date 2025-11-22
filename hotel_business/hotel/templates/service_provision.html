@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Hotel - Оказания услуг</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/css/uikit.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.24.2/dist/js/uikit-icons.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav class="uk-navbar-container uk-navbar" uk-navbar>
+            <div class="uk-navbar-left uk-margin-left">
+                <div class="uk-navbar-item">
+                    <a class="uk-navbar-item uk-logo" href="/">Web Hotel</a>
+                </div>
+                <div class="uk-navbar-item">
+                    <a class="uk-link-text" href="{% url 'clients' %}">Список клиентов</a>
+                </div>
+                <div class="uk-navbar-item">
+                    <a class="uk-link-text" href="{% url 'rooms' %}">Номерной фонд</a>
+                </div>
+                <div class="uk-navbar-item">
+                    <a class="uk-link-text" href="{% url 'service_provision' %}">Записи на услуги</a>
+                </div>
+            </div>
+            <div class="uk-navbar-right uk-margin-right">
+                <div class="uk-navbar-item">
+                    <a class="uk-navbar-item uk-link-text" href="/logout/">Выйти</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="uk-container uk-margin-top">
+            <h1 class="uk-text-center">Записи на услуги</h1>
+
+            <button class="uk-button uk-button-primary uk-width-1-1" type="button" uk-toggle="target: #add-modal">Добавить запись</button>
+
+            <div id="add-modal" uk-modal>
+                <div class="uk-modal-dialog uk-modal-body">
+                    <button class="uk-modal-close-default" type="button" uk-close></button>
+                    <h2 class="uk-modal-title">Запись на услугу</h2>
+                    <form class="uk-form-stacked" method="post">
+                        {% csrf_token %}
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="reservation">Бронирование</label>
+                            <div class="uk-form-controls">
+                                <select class="uk-select" id="reservation" name="reservation">
+                                    {% for reservation in reservations %}
+                                    <option value="{{ reservation.id }}">№{{ reservation.id }} - {{ reservation.client.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="service">Услуга</label>
+                            <div class="uk-form-controls">
+                                <select class="uk-select" id="service" name="service">
+                                    {% for service in services %}
+                                    <option value="{{ service.id }}">{{ service.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="count">Количество</label>
+                            <div class="uk-form-controls">
+                                <input class="uk-input" id="count" type="number" name="count" placeholder="Количество" required>
+                            </div>
+                        </div>
+
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="date-of-provision">Дата оказания</label>
+                            <div class="uk-form-controls">
+                                <input class="uk-input" id="date-of-provision" type="date" name="date-of-provision" placeholder="Дата оказания" required>
+                            </div>
+                        </div>
+
+                        <div class="uk-margin">
+                            <button class="uk-button uk-button-primary uk-width-1-1" type="submit">Записать</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="uk-container uk-margin-top">
+                {% for provision in provisions %}
+                <div class="uk-card uk-card-default uk-card-body uk-margin-bottom">
+                    <h3 class="uk-card-title">{{ provision.reservation.client.name }} (Бронирование №{{ provision.reservation.id }}) - {{ provision.service.name }}</h3>
+                    <p>Количество: {{ provision.count }}</p>
+                    <p>Дата оказания: {{ provision.date_of_provision|date:"d.m.Y" }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

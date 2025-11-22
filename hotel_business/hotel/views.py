@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
-from .models import Service, Room, Category
+from .models import Service, Room, Category, Guest, ProvisionOfService, Reservation
 
 
 def index(request):
@@ -20,7 +20,10 @@ def index(request):
 def service_list_guest(request):
 
     services = Service.objects.all()
-    context = {'services': services}
+
+    context = {
+        'services': services
+    }
 
     return render(request, 'index_guest.html', context)
 
@@ -46,8 +49,7 @@ def clients(request):
     if not request.user.groups.filter(name="Manager").exists():
         return redirect('index')
 
-    clients_group = Group.objects.get_or_create(name="Clients")
-    clients_list = clients_group[0].user_set.all()
+    clients_list = Guest.objects.all()
 
     return render(request, "clients.html", { 'clients' : clients_list })
 
@@ -77,6 +79,38 @@ def rooms(request):
     }
 
     return render(request, 'rooms.html', context)
+
+
+def service_provision(request):
+
+    if not request.user.groups.filter(name="Manager").exists():
+        return redirect('index')
+
+    provisions = ProvisionOfService.objects.all().order_by('-date_of_provision')
+    reservations = Reservation.objects.all().order_by('-id')
+    services = Service.objects.all()
+
+    if request.method == 'POST':
+        reservation_id = request.POST.get('reservation')
+        service_id = request.POST.get('service')
+        provision_count = request.POST.get('count')
+        provision_date = request.POST.get('date-of-provision')
+
+        new_provision = ProvisionOfService()
+        new_provision.reservation = reservations.get(id=reservation_id)
+        new_provision.service = services.get(id=service_id)
+        new_provision.count = provision_count
+        new_provision.date_of_provision = provision_date
+
+        new_provision.save()
+
+    context = {
+        'provisions': provisions,
+        'reservations': reservations,
+        'services': services
+    }
+
+    return render(request, 'service_provision.html', context)
 
 
 def login_page(request):
