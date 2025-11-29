@@ -63,7 +63,7 @@ def clients(request):
     if not request.user.groups.filter(name="Manager").exists():
         return redirect('index')
 
-    clients_list = Guest.objects.all()
+    clients_list = Guest.objects.all().order_by("name")
 
     return render(request, "clients.html", { 'clients' : clients_list })
 
