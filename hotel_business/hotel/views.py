@@ -14,6 +14,9 @@ def index(request):
     if current_user.groups.filter(name="Manager").exists():
         return service_list_manager(request)
 
+    if current_user.groups.filter(name="Clients").exists():
+        return service_list_client(request)
+
     return service_list_guest(request)
 
 
@@ -26,6 +29,17 @@ def service_list_guest(request):
     }
 
     return render(request, 'index_guest.html', context)
+
+
+def service_list_client(request):
+
+    services = Service.objects.all()
+
+    context = {
+        'services': services
+    }
+
+    return render(request, 'index_client.html', context)
 
 
 def service_list_manager(request):
