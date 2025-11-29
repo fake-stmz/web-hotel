@@ -71,7 +71,7 @@ def clients(request):
     if sorting == "asc":
         clients_list = clients_list.order_by("name")
         messages.add_message(request, messages.SUCCESS, "Клиенты сортированы в алфавитном порядке.")
-    else:
+    elif sorting == "desc":
         clients_list = clients_list.order_by("-name")
         messages.add_message(request, messages.SUCCESS, "Клиенты сортированы в обратном порядке.")
 
@@ -192,6 +192,8 @@ def guest_login(request):
 
 
 def logout_page(request):
-    
+
+    messages.add_message(request, messages.WARNING, "Вы вышли из аккаунта.")
     logout(request)
+
     return redirect('login')
