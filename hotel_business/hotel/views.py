@@ -63,9 +63,15 @@ def clients(request):
     if not request.user.groups.filter(name="Manager").exists():
         return redirect('index')
 
-    clients_list = Guest.objects.all().order_by("name")
+    clients_list = Guest.objects.all()
 
-    return render(request, "clients.html", { 'clients' : clients_list })
+    sorting = request.GET.get('sort', 'asc')
+    if sorting == "asc":
+        clients_list = clients_list.order_by("name")
+    else:
+        clients_list = clients_list.order_by("-name")
+
+    return render(request, "clients.html", { 'clients' : clients_list, 'sorting': sorting })
 
 
 def rooms(request):

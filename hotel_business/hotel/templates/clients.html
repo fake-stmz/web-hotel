@@ -36,6 +36,16 @@
         <div class="uk-container uk-margin-top">
             <h1 class="uk-text-center">Список клиентов</h1>
             <div class="uk-container uk-margin-top">
+                <div class="uk-card uk-card-default uk-card-body uk-margin-bottom">
+                    <form class="uk-form-stacked">
+                        <label class="uk-form-label" for="sorting">Сортировка ФИО</label>
+                        <select class="uk-select" id="sorting" name="sort">
+                            <option value="asc" {% if sorting == "asc" %}selected{% endif %}>В алфавитном порядке</option>
+                            <option value="desc" {% if sorting == "desc" %}selected{% endif %}>В обратном порядке</option>
+                        </select>
+                        <button class="uk-button uk-button-primary uk-margin-top uk-width-1-1">Применить</button>
+                    </form>
+                </div>
                 {% for client in clients %}
                 <div class="uk-card uk-card-default uk-card-body uk-margin-bottom">
                     <h3 class="uk-card-title">{{ client.name }}</h3>
