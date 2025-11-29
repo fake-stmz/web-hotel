@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from .models import Service, Room, Category, Guest, ProvisionOfService, Reservation
 
 
@@ -48,6 +49,7 @@ def service_list_manager(request):
 
     search_query = request.GET.get('search')
     if search_query:
+        messages.add_message(request, messages.SUCCESS, f"Выведены услуги по запросу: {search_query}.")
         services = services.filter(name__icontains=search_query)
 
     context = {
@@ -63,13 +65,15 @@ def clients(request):
     if not request.user.groups.filter(name="Manager").exists():
         return redirect('index')
 
-    clients_list = Guest.objects.all()
+    clients_list = Guest.objects.all().order_by("name")
 
-    sorting = request.GET.get('sort', 'asc')
+    sorting = request.GET.get('sort', '')
     if sorting == "asc":
         clients_list = clients_list.order_by("name")
+        messages.add_message(request, messages.SUCCESS, "Клиенты сортированы в алфавитном порядке.")
     else:
         clients_list = clients_list.order_by("-name")
+        messages.add_message(request, messages.SUCCESS, "Клиенты сортированы в обратном порядке.")
 
     return render(request, "clients.html", { 'clients' : clients_list, 'sorting': sorting })
 
@@ -86,9 +90,11 @@ def rooms(request):
     category_filter = request.GET.get('category-filter', '')
 
     if berths_count_filter:
+        messages.add_message(request, messages.SUCCESS, f"Применен фильтр по количеству спальных мест: {berths_count_filter}.")
         rooms_list = rooms_list.filter(berths_count = int(berths_count_filter))
 
     if category_filter:
+        messages.add_message(request, messages.SUCCESS, f"Применен фильтр по категории мест: {category_filter}.")
         rooms_list = rooms_list.filter(category__name = category_filter)
 
     context = {
@@ -124,6 +130,8 @@ def service_provision(request):
 
         new_provision.save()
 
+        messages.add_message(request, messages.SUCCESS, "Запись на услугу оформлена успешно.")
+
     context = {
         'provisions': provisions,
         'reservations': reservations,
@@ -142,6 +150,7 @@ def login_page(request):
         user = authenticate(request, username=login_input, password=password)
         if user is not None:
             login(request, user)
+            messages.add_message(request, messages.SUCCESS, f"Вы вошли в аккаунт {login_input} успешно.")
             return redirect('index')
         else:
             return render(request, 'login.html', {'error': 'Неверный логин или пароль.'})
@@ -164,6 +173,7 @@ def register_page(request):
             clients_group = Group.objects.get_or_create(name="Clients")
             user.groups.add(clients_group[0])
             login(request, user)
+            messages.add_message(request, messages.SUCCESS, f"Регистрация прошла успешно.")
             return redirect('index')
         else:
             return render(request, 'register.html', {'error': 'Пароли не совпадают.'})
@@ -175,6 +185,9 @@ def guest_login(request):
     
     guest_user = authenticate(request, username='guest', password='guestpassword')
     login(request, guest_user)
+
+    messages.add_message(request, messages.SUCCESS, f"Вы вошли как гость.")
+
     return redirect('index')
 
 

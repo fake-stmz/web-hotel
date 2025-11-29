@@ -74,5 +74,17 @@
             </div>
         </div>
     </main>
+    {% if messages %}
+    <script>
+        {% for message in messages %}
+        UIkit.notification({
+            message: '{{ message }}',
+            status: '{{ message.tags }}',
+            pos: 'bottom-right',
+            timeout: 5000
+        });
+        {% endfor %}
+    </script>
+    {% endif %}
 </body>
 </html>
