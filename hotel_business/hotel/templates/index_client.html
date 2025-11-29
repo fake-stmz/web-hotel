@@ -1,3 +1,5 @@
+{% load discount %}
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -32,7 +34,11 @@
                 <div class="uk-card uk-card-default uk-card-body uk-margin-bottom" {% block available_service %}{% endblock %}>
                     <h3 class="uk-card-title">{{ service.name }}</h3>
                     <p>{{ service.description }}</p>
-                    <p><b>Цена:</b> {{ service.price }} руб.</p>
+                    <p><b>Цена:</b>
+
+                        <del>{{ service.price }}</del> <span style="color: red;">{{ service.price|discount:request }}</span>
+
+                        руб.</p>
                 </div>
                 {% endfor %}
             </div>

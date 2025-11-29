@@ -30,7 +30,7 @@ class Guest(models.Model): # Гость
     date_of_birth = models.DateField() # Дата рождения
     document = models.ForeignKey(Document, on_delete=CASCADE, related_name="guest", null=True, blank=True) # Документ (может быть пустой)
     discount = models.IntegerField() # Скидка в процентах
-    user_profile = models.ForeignKey(User, on_delete=CASCADE, related_name="guest_info", null=True, blank=True)
+    user_profile = models.OneToOneField(User, on_delete=CASCADE, related_name="guest_info", null=True, blank=True)
 
 class Room(models.Model): # Номер
     floor = models.IntegerField() # Этаж
