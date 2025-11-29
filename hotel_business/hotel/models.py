@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import CASCADE
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -21,6 +22,7 @@ class Service(models.Model): # Услуга
     name = models.CharField(max_length=50) # Название
     price = models.DecimalField(max_digits=10, decimal_places=2) # Цена
     description = models.TextField() # Описание
+    available_to_guest = models.BooleanField(default=False)
 
 class Guest(models.Model): # Гость
     name = models.CharField(max_length=200) # ФИО
@@ -28,6 +30,7 @@ class Guest(models.Model): # Гость
     date_of_birth = models.DateField() # Дата рождения
     document = models.ForeignKey(Document, on_delete=CASCADE, related_name="guest", null=True, blank=True) # Документ (может быть пустой)
     discount = models.IntegerField() # Скидка в процентах
+    user_profile = models.ForeignKey(User, on_delete=CASCADE, related_name="guest_info", null=True, blank=True)
 
 class Room(models.Model): # Номер
     floor = models.IntegerField() # Этаж
