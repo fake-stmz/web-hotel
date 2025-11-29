@@ -31,13 +31,16 @@
             <h1 class="uk-text-center">Список услуг</h1>
             <div class="uk-container uk-margin-top">
                 {% for service in services %}
-                <div class="uk-card uk-card-default uk-card-body uk-margin-bottom" {% block available_service %}{% endblock %}>
+                <div class="uk-card uk-card-default uk-card-body uk-margin-bottom" {% block available_service %}{% endblock %}
+                    {% if request.user.guest_info.discount > 10 %}style="background-color: #98fadd"{% endif %}>
                     <h3 class="uk-card-title">{{ service.name }}</h3>
                     <p>{{ service.description }}</p>
                     <p><b>Цена:</b>
-
-                        <del>{{ service.price }}</del> <span style="color: red;">{{ service.price|discount:request }}</span>
-
+                        {% if request.user.guest_info.discount > 0 %}
+                        <del>{{ service.price }}</del> <span class="uk-text-danger">{{ service.price|discount:request }}</span>
+                        {% else %}
+                        {{ service.price }}
+                        {% endif %}
                         руб.</p>
                 </div>
                 {% endfor %}
